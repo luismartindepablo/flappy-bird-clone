@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://bvpnynt0wo3dj"]
+
+[ext_resource type="Texture2D" uid="uid://dfrt3rf6emcqs" path="res://art/sprites/background-day.png" id="1_0wfyh"]
+[ext_resource type="Script" uid="uid://couefrutyev81" path="res://scripts/main.gd" id="1_tbgi4"]
+[ext_resource type="Script" uid="uid://bstsffbhsvg6t" path="res://scripts/parallax.gd" id="2_85g3d"]
+[ext_resource type="Texture2D" uid="uid://c0dko0t6eh8o4" path="res://art/sprites/base.png" id="2_sugp2"]
+[ext_resource type="PackedScene" uid="uid://57ygvhyji8qj" path="res://scenes/pipes_pair.tscn" id="2_tefeu"]
+[ext_resource type="PackedScene" uid="uid://enka6wakk8k7" path="res://scenes/bird.tscn" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://ddtthwu8x2m0h" path="res://scripts/ground.gd" id="4_tipki"]
+[ext_resource type="AudioStream" uid="uid://cf0l4653uspd6" path="res://art/audio/hit.ogg" id="6_choun"]
+[ext_resource type="Script" uid="uid://72mlwiay3jhc" path="res://scripts/pipe_spawner.gd" id="6_tefeu"]
+[ext_resource type="PackedScene" uid="uid://bpp0u7c8c3mht" path="res://scenes/hud.tscn" id="7_o6xl0"]
+[ext_resource type="AudioStream" uid="uid://dv4edfe6j0hiy" path="res://art/audio/swoosh.wav" id="10_eb6dy"]
+[ext_resource type="AudioStream" uid="uid://cvtbh8beoecj3" path="res://art/audio/die.wav" id="11_trceg"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_tipki"]
+a = Vector2(152, 0)
+b = Vector2(-136, 0)
+
+[node name="Main" type="Node" unique_id=1366087053]
+script = ExtResource("1_tbgi4")
+
+[node name="World" type="Node" parent="." unique_id=1917665772]
+
+[node name="ParallaxBackground" type="Parallax2D" parent="World" unique_id=277086986]
+repeat_size = Vector2(288, 0)
+autoscroll = Vector2(-30, 0)
+script = ExtResource("2_85g3d")
+metadata/_edit_group_ = true
+
+[node name="BackgroundDay" type="Sprite2D" parent="World/ParallaxBackground" unique_id=638075033]
+position = Vector2(144, 256)
+texture = ExtResource("1_0wfyh")
+
+[node name="ParallaxGround" type="Parallax2D" parent="World" unique_id=767488183]
+repeat_size = Vector2(336, 0)
+autoscroll = Vector2(-60, 0)
+script = ExtResource("2_85g3d")
+metadata/_edit_group_ = true
+
+[node name="Ground" type="Sprite2D" parent="World/ParallaxGround" unique_id=560897590]
+position = Vector2(168, 504)
+texture = ExtResource("2_sugp2")
+
+[node name="Ground" type="Area2D" parent="World" unique_id=1740872157]
+position = Vector2(136, 448)
+script = ExtResource("4_tipki")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ground" unique_id=1791273252]
+shape = SubResource("SegmentShape2D_tipki")
+
+[node name="AudioHit" type="AudioStreamPlayer" parent="World/Ground" unique_id=660349428]
+stream = ExtResource("6_choun")
+
+[node name="Systems" type="Node" parent="." unique_id=288116912]
+
+[node name="PipeSpawner" type="Node" parent="Systems" unique_id=677201515 node_paths=PackedStringArray("pipes_pair_parent")]
+script = ExtResource("6_tefeu")
+pipes_pair_scene = ExtResource("2_tefeu")
+pipes_pair_parent = NodePath("../../Entities")
+
+[node name="TimerPipeSpawn" type="Timer" parent="Systems/PipeSpawner" unique_id=1907986451]
+
+[node name="Entities" type="Node" parent="." unique_id=1998020240]
+
+[node name="Bird" parent="Entities" unique_id=1853256782 instance=ExtResource("3_sugp2")]
+z_index = 1
+position = Vector2(136, 88)
+
+[node name="Audio" type="Node" parent="." unique_id=1528093297]
+
+[node name="AudioStart" type="AudioStreamPlayer" parent="Audio" unique_id=1963784775]
+stream = ExtResource("10_eb6dy")
+
+[node name="AudioGameOver" type="AudioStreamPlayer" parent="Audio" unique_id=2029037345]
+stream = ExtResource("11_trceg")
+
+[node name="HUD" parent="." unique_id=724807921 instance=ExtResource("7_o6xl0")]
+
+[connection signal="body_entered" from="World/Ground" to="World/Ground" method="_on_body_entered"]
