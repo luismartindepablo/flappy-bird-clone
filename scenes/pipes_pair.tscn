@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://57ygvhyji8qj"]
+
+[ext_resource type="Script" uid="uid://dturub6gfqelr" path="res://scripts/pipes_pair.gd" id="1_tcqmu"]
+[ext_resource type="PackedScene" uid="uid://dlj7j2vkfwcu4" path="res://scenes/pipe.tscn" id="1_txto4"]
+[ext_resource type="AudioStream" uid="uid://cwb5lcbl5dc18" path="res://art/audio/hit.wav" id="3_y1cuy"]
+[ext_resource type="AudioStream" uid="uid://bvpupm5plr8by" path="res://art/audio/point.wav" id="4_ww6nf"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_tcqmu"]
+a = Vector2(0, -384)
+b = Vector2(0, 384)
+
+[node name="PipesPair" type="Node2D" unique_id=1529013951]
+script = ExtResource("1_tcqmu")
+metadata/_edit_group_ = true
+
+[node name="PipeTop" parent="." unique_id=1685764372 instance=ExtResource("1_txto4")]
+position = Vector2(0, -224)
+rotation = -3.1415925
+
+[node name="PipeBottom" parent="." unique_id=640858722 instance=ExtResource("1_txto4")]
+position = Vector2(0, 224)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1974365218]
+position = Vector2(64, 0)
+rect = Rect2(-8, -8, 16, 16)
+
+[node name="GoalLine" type="Area2D" parent="." unique_id=530402562]
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GoalLine" unique_id=1005243840]
+shape = SubResource("SegmentShape2D_tcqmu")
+
+[node name="AudioHit" type="AudioStreamPlayer" parent="." unique_id=1761566044]
+stream = ExtResource("3_y1cuy")
+
+[node name="AudioScore" type="AudioStreamPlayer" parent="." unique_id=1269715187]
+stream = ExtResource("4_ww6nf")
+
+[connection signal="body_entered" from="PipeTop" to="." method="_on_pipe_bird_entered"]
+[connection signal="body_entered" from="PipeBottom" to="." method="_on_pipe_bird_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
+[connection signal="body_entered" from="GoalLine" to="." method="_on_goal_line_body_entered"]
